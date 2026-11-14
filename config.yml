@@ -68,7 +68,6 @@ params:
     ShowToc: false
     TocOpen: true
     comments: true
-    math: true
     homeInfoParams:
         Title: "欢迎光临我的博客！"
 
