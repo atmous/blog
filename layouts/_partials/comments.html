@@ -4,13 +4,45 @@
         <hr />
     </div>
     <div id="tcomment"></div>
-    <script src="https://registry.npmmirror.com/twikoo/{{ site.Params.twikoo.version }}/files/dist/twikoo.all.min.js"></script>
+    {{- /* Twikoo script is deferred: it used to be a blocking 300KB script
+      in the middle of the article that held up the footer and everything
+      after it. Init runs on DOMContentLoaded (which fires after deferred
+      scripts), so window.twikoo is already there when it loads, and a
+      failed CDN load shows a message instead of throwing an uncaught
+      ReferenceError. */}}
+    <script defer src="https://registry.npmmirror.com/twikoo/{{ site.Params.twikoo.version }}/files/dist/twikoo.all.min.js"></script>
     <script>
-        twikoo.init({
-            envId: {{ site.Params.twikoo.id }},
-            el: "#tcomment",
-            lang: 'zh-CN',
-            path: window.TWIKOO_MAGIC_PATH || window.location.pathname,
+        document.addEventListener("DOMContentLoaded", function () {
+            var el = document.getElementById("tcomment");
+            if (window.twikoo) {
+                twikoo.init({
+                    envId: {{ site.Params.twikoo.id }},
+                    el: "#tcomment",
+                    lang: 'zh-CN',
+                    path: window.TWIKOO_MAGIC_PATH || window.location.pathname,
+                });
+            } else if (el) {
+                el.innerHTML = '<p class="tcomment-fallback">评论加载失败，可能是网络问题，刷新页面再试一次。</p>';
+            }
         });
+    </script>
+    <script>
+        (function () {
+            // Twikoo renders its emoji picker / avatars as <img> without alt
+            // (decorative images); give them empty alt so screen readers
+            // and validators stop flagging every comment thread.
+            // Note: Twikoo mounts a Vue app that REPLACES the #tcomment
+            // element, so observe its (persistent) parent instead.
+            function fixAlt(root) {
+                root.querySelectorAll("img:not([alt])").forEach(function (img) {
+                    img.alt = "";
+                });
+            }
+            var box = document.getElementById("tcomment");
+            if (!box || !("MutationObserver" in window)) return;
+            var scope = box.parentElement || document.body;
+            new MutationObserver(function () { fixAlt(scope); }).observe(scope, { childList: true, subtree: true });
+            fixAlt(scope);
+        })();
     </script>
 </div>
