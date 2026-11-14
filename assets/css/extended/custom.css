@@ -74,15 +74,31 @@ body {
     white-space: normal;
 }
 
+/* External links: #42b983 on white is only 2.47:1 (WCAG AA needs 4.5:1),
+   so light mode uses a darker green (5.32:1). Dark mode keeps the
+   brighter green, which is 6.75:1 on the dark background. */
 .post-content a[href^="http"] {
+    color: #1e7a4d;
+}
+
+[data-theme="dark"] .post-content a[href^="http"] {
     color: #42b983;
 }
 
 .post-content blockquote {
     border-left: 4px solid #42b983;
     padding: 1px 15px;
-    color: #777;
+    color: #6b6b6b;
     background-color: rgba(66, 185, 131, .1);
+}
+
+[data-theme="dark"] .post-content blockquote {
+    color: #a3a3a3;
+}
+
+.tcomment-fallback {
+    color: var(--secondary);
+    font-size: 15px;
 }
 
 .post-content code {
