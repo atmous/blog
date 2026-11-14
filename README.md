@@ -6,7 +6,7 @@
 ## 改动内容
 
 ### 评论
-Twikoo，配置在 `config.yml` 的 `params.twikoo`，脚本走 `registry.npmmirror.com`。
+Twikoo，配置在 `config.yml` 的 `params.twikoo`，脚本走 `registry.npmmirror.com`；脚本用 `defer` 加载、初始化有失败兜底（CDN 挂了显示提示而不是抛错），评论区图片自动补 `alt=""`。
 - `layouts/_partials/comments.html`
 
 ### 页脚：运行时间 + 访问统计 + 版权
@@ -18,7 +18,7 @@ Twikoo，配置在 `config.yml` 的 `params.twikoo`，脚本走 `registry.npmmir
 
 ### KaTeX + 霞鹜文楷
 - `body` 字体设为霞鹜文楷（`assets/css/extended/custom.css`），字体文件走 npmmirror
-- KaTeX `0.16.11`，CDN 换成 npmmirror；仅 `math: true` 时加载
+- KaTeX `0.16.11`，CDN 换成 npmmirror；只在正文确实含有 `$...$` 公式（或单页 `math: true`）时加载，不再全站加载
 - `config.yml` 开了 goldmark `passthrough`，否则 `$a_b$` 这类带下标的公式会被 Markdown 当成斜体处理导致渲染错误
 - `layouts/_partials/extend_head.html`、`assets/css/extended/custom.css`、`config.yml`
 
