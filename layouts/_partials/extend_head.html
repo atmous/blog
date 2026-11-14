@@ -1,7 +1,17 @@
 <link rel="preconnect" href="https://registry.npmmirror.com" crossorigin>
 <link rel="stylesheet" href="https://registry.npmmirror.com/lxgw-wenkai-screen-web/1.522.0/files/style.css">
 
-{{- if or .Params.math site.Params.math }}
+{{- /* KaTeX: only load on pages that actually contain math.
+  Global site.Params.math used to force it on every page (208 pages),
+  but only 2 posts contain real $...$ math; shell snippets like $VAR
+  and $remote_addr must not trigger it, hence the no-whitespace rule. */}}
+{{- $hasMath := false }}
+{{- if .IsPage }}
+  {{- if or .Params.math (findRE `\$[^\s$]+\$` .RawContent) }}
+    {{- $hasMath = true }}
+  {{- end }}
+{{- end }}
+{{- if $hasMath }}
 <link rel="stylesheet" href="https://registry.npmmirror.com/katex/0.16.11/files/dist/katex.min.css">
 <script defer src="https://registry.npmmirror.com/katex/0.16.11/files/dist/katex.min.js"></script>
 <script defer src="https://registry.npmmirror.com/katex/0.16.11/files/dist/contrib/auto-render.min.js"
